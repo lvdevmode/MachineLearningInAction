@@ -29,7 +29,7 @@ plt.show()
 
 
 
-# Crude kNN implementation
+# Crude kNN implementation - Intuition based.
 def classify0_basic(inX, dataset, labels, k):
     n = dataset.shape[0]
     labels = np.array(labels)
@@ -64,4 +64,32 @@ inX = [0.1, 0.9]
 plt.scatter(inX[0], inX[1])
 k = 3
 prediction = classify0_basic(inX, X, y, k)
+print("Predicted Label for ", inX, " is ", prediction)
+
+
+
+
+# Better implementation
+def classify0(inx, dataset, labels, k):
+    n = dataset.shape[0]
+    diffMat = np.tile(inx, (n, 1)) - dataset # Look into tile. Quite useful.
+    sqDiffMat = diffMat**2
+    sqDistances = sqDiffMat.sum(axis=1)
+    distances = sqDistances**0.5
+    sortedDistIndices = distances.argsort()
+    print("Sorted Distances: ", distances[sortedDistIndices])
+    print("Respective Labels: ", np.array(labels)[sortedDistIndices])
+    classCount = {}
+    for i in range(k):
+        voteLabel = labels[sortedDistIndices[i]]
+        classCount[voteLabel] = classCount.get(voteLabel, 0) + 1
+    sortedClassCount = sorted(classCount.items(), key=operator.itemgetter(1), reverse=True) # Sort using iterators. Important.
+    print("Votes: ", sortedClassCount)
+    return sortedClassCount[0][0]
+
+X, y, y_ = create_dataset()
+inX = [0.1, 0.9]
+plt.scatter(inX[0], inX[1])
+k = 3
+prediction = classify0(inX, X, y, k)
 print("Predicted Label for ", inX, " is ", prediction)
