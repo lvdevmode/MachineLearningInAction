@@ -9,16 +9,19 @@ Created on Tue Apr  3 16:52:17 2018
 import numpy as np
 import operator
 
-input_file = "./data/datingTestSet.txt"
-f = open(input_file, 'r')
+#filename = "./data/datingTestSet.txt"
 
-lines = f.readlines()
-X = []
-y = []
-for line in lines:
-    elements = line.split('\t')
-    X.append([elements[0], elements[1], elements[2]])
-    y.append(elements[3].split('\n')[0])
+def file2matrix(filename):
+    f = open(filename, 'r')
+
+    lines = f.readlines()
+    X = []
+    y = []
+    for line in lines:
+        line = line.strip()
+        elements = line.split('\t')
+        X.append(elements[0:3])
+        y.append(elements[3])
     
-X = np.array(X)
-y = np.array(y)
+    X = np.array(X)
+    return X, y
