@@ -9,7 +9,7 @@ Created on Tue Apr  3 16:52:17 2018
 import numpy as np
 import operator
 
-# Parsing the input text file
+######## Parsing the input text file
 
 ## filename = "./data/datingTestSet.txt"
 ## filename = "./data/datingTestSet_withNumericLabels.txt"
@@ -26,13 +26,12 @@ def file2matrix(filename):
         X.append(elements[0:3])
         y.append(int(elements[-1]))
     
-    X = np.array(X)
+    X = np.array(X).astype(np.float32)
     return X, y
 
+######## Analyzing the input / Visualization
 
-# Analyzing the input / Visualization
- 
-X, y = file2matrix("./data/datingTestSet_withNumericLabels.txt")
+#X, y = file2matrix("./data/datingTestSet_withNumericLabels.txt")
 ## X = [Number of Frequent Flyer Miles Earned Per Year, Percentage of Time Spent Playing Video Games,
 ## Liters of Ice-Cream Consumed Per Week], y = [Degree of Likenesss]
 
@@ -76,3 +75,59 @@ for label in possible_labels:
 ax4.legend()
 
 plt.show()
+
+######## Prepare / Normalizing the feature values
+
+# To normalize the values of a particular feature to a range of 0 to 1, the following
+# is used => newVal = (oldVal - minVal) / (maxVal - minVal)
+
+def autonorm_intuitive(X):
+    minVal = X.min(0)
+    maxVal = X.max(0)
+    ranges = maxVal - minVal
+    X = (X - minVal) / ranges
+    return X, minVal, ranges # minVal, ranges will be used to normalize the test set.
+
+def autonorm(X):
+    minVal = X.min(0)
+    maxVal = X.max(0)
+    ranges = maxVal - minVal
+    n = X.shape[0]
+    X = X - np.tile(minVal, (n, 1))
+    X = X / np.tile(ranges, (n, 1))
+    return X, minVal, ranges
+
+#X_normalized = autonorm_intuitive(X)
+#X_normalized = autonorm(X)
+
+def classify0(inx, dataset, labels, k):
+    n = dataset.shape[0]
+    diffMat = np.tile(inx, (n, 1)) - dataset # Look into tile. Quite useful.
+    sqDiffMat = diffMat**2
+    sqDistances = sqDiffMat.sum(axis=1)
+    distances = sqDistances**0.5
+    sortedDistIndices = distances.argsort()
+    classCount = {}
+    for i in range(k):
+        voteLabel = labels[sortedDistIndices[i]]
+        classCount[voteLabel] = classCount.get(voteLabel, 0) + 1
+    sortedClassCount = sorted(classCount.items(), key=operator.itemgetter(1), reverse=True) # Sort using iterators. Important.
+    return sortedClassCount[0][0]
+
+def datingClassTest():
+    X, y = file2matrix("./data/datingTestSet_withNumericLabels.txt")
+    normX, minVal, ranges = autonorm_intuitive(X)
+    trainTestRatio = 0.1
+    n = normX.shape[0]
+    numTestVecs = int(trainTestRatio * n)
+    errorCount = 0
+    for i in range(numTestVecs):
+        prediction = classify0(normX[i], normX[numTestVecs:], y[numTestVecs:], 4)
+        #print("Predicted Label: %d   Ground Truth Label: %d" % (prediction, y[i]))
+        if prediction != y[i]:
+            errorCount = errorCount + 1
+    errorRate = errorCount / numTestVecs
+    print("Error Rate: ", errorRate)
+    print("Accuracy: %f" % (100.0 - errorRate * 100))
+
+#datingClassTest()
