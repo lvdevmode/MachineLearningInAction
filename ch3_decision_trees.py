@@ -36,16 +36,14 @@ def calcShannonEntropy(dataset):
 
 
 dataset, feat_labels = create_dataset()
-print(calcShannonEntropy(dataset))
+#print(calcShannonEntropy(dataset))
 
 
 def splitDataset(dataset, axis, value):
     newDataset = []
     for featureVector in dataset:
         if featureVector[axis] == value:
-            reducedFeatureVector = featureVector[:axis]
-            reducedFeatureVector.extend(featureVector[axis+1:])
-            newDataset.append(reducedFeatureVector)
+            newDataset.append(featureVector[:axis] + featureVector[axis+1:])
     return newDataset
 
 
@@ -100,7 +98,7 @@ This can be clearly seen by comparing the splits in case of feature 0 and featur
 When the split is done using feature 0, we see that we get 2 subsets. One comprising of
 the labels [yes, yes, no], and the other one containing [no, no]. In case of feature 1,
 we get subsets containing labels [no] and [yes , yes, no, no]. This split, using
-feature 0, is clearly less organized as compared to feature 0, as our target is to divide
+feature 1, is clearly less organized as compared to feature 0, as our target is to divide
 the dataset such that each subset contains only one kind of label.
 """
 
