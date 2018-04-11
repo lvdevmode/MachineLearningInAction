@@ -72,7 +72,7 @@ def chooseBestFeatureToSplit(dataset):
         newEntropy = 0.0
         for value in uniqueVals:
             subDataset = splitDataset(dataset, i, value)
-            prob = len(subDataset) / float(len(dataset))
+            prob = len(subDataset) / float(len(dataset)) # See following explanation.
             newEntropy = newEntropy + prob * calcShannonEntropy(subDataset)
         infoGain = baseEntropy - newEntropy
         if infoGain > bestInfoGain:
@@ -80,8 +80,29 @@ def chooseBestFeatureToSplit(dataset):
             bestFeatureToSplitOn = i
     return bestFeatureToSplitOn
 
+"""
+So, in this loop, what are we doing is that for each unique value the feature i can take
+we create the split and then calculate entropy for that split. But now, in order to get 
+the collective entropy i.e. total entropy for that feature as a whole, we cannot directly
+sum up all the entropies for the different splits of that feature. Rather, we multiply
+entropy calculated for the particular value of that feature vector, and then multiply
+it with the probability of that particular value occuring in that feature.
+"""
+
 print(chooseBestFeatureToSplit(dataset))
 
+"""
+We observe that the above command returns 0 as the best feature to split on. It means 
+feature 0 gives best information gain or reduction in entropy. Reduction in entropy
+would mean decrease in the randomness of the data, while at the same time, gain in
+information means that now the data is more organized. 
+This can be clearly seen by comparing the splits in case of feature 0 and feature 1.
+When the split is done using feature 0, we see that we get 2 subsets. One comprising of
+the labels [yes, yes, no], and the other one containing [no, no]. In case of feature 1,
+we get subsets containing labels [no] and [yes , yes, no, no]. This split, using
+feature 0, is clearly less organized as compared to feature 0, as our target is to divide
+the dataset such that each subset contains only one kind of label.
+"""
 
 
 
