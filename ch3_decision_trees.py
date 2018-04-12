@@ -8,6 +8,7 @@ Created on Tue Apr 10 11:13:49 2018
 
 import numpy as np
 import math
+import operator
 
 def create_dataset():
     dataset = [[1, 1, 'yes'],
@@ -46,7 +47,7 @@ def splitDataset(dataset, axis, value):
             newDataset.append(featureVector[:axis] + featureVector[axis+1:])
     return newDataset
 
-
+"""
 print(dataset)
 print(splitDataset(dataset, 0, 0))
 print(splitDataset(dataset, 0, 1))
@@ -57,7 +58,7 @@ print(calcShannonEntropy(splitDataset(dataset, 0, 0)))
 print(calcShannonEntropy(splitDataset(dataset, 0, 1)))
 print(calcShannonEntropy(splitDataset(dataset, 1, 0)))
 print(calcShannonEntropy(splitDataset(dataset, 1, 1)))
-
+"""
 
 def chooseBestFeatureToSplit(dataset):
     numFeatures = len(dataset[0]) - 1
@@ -87,7 +88,9 @@ entropy calculated for the particular value of that feature vector, and then mul
 it with the probability of that particular value occuring in that feature.
 """
 
-print(chooseBestFeatureToSplit(dataset))
+
+#print(chooseBestFeatureToSplit(dataset))
+
 
 """
 We observe that the above command returns 0 as the best feature to split on. It means 
@@ -102,10 +105,33 @@ feature 1, is clearly less organized as compared to feature 0, as our target is 
 the dataset such that each subset contains only one kind of label.
 """
 
+def majorityCount(classList): # Passing a class list here as this func will be only be called
+    classCount =  {}          # when there are no more attributes left to split the dataset on
+    for label in classList:   # or in special cases when the number of splits have exceeded a limit.
+        classCount[label] = classCount.get(label, 0) + 1
+    sortedClassCount = sorted(classCount.items(), key=operator.itemgetter(1), reverse=True)
+    return sortedClassCount[0][0]
 
+def createTree(dataset, feat_labels):
+    classList = [element[-1] for element in dataset]
+    if classList.count(classList[0]) == len(classList):
+        return classList[0] # Returns a leaf node, containg only the label.
+    if len(dataset[0]) == 1:
+        return majorityCount(classList) # Returns a leaf node, containg only the label.
+    bestFeatureToSplit = chooseBestFeatureToSplit(dataset)
+    bestFeatureLabel = feat_labels[bestFeatureToSplit]
+    del(feat_labels[bestFeatureToSplit]) # This is required as the selected feature will be removed from
+    myTree = {bestFeatureLabel:{}}       # the dataset, so its label should also be removed.
+    featureValues = [element[bestFeatureToSplit] for element in dataset]
+    uniqueVals = set(featureValues)
+    for val in uniqueVals:
+        copy_of_feat_labels = feat_labels[:] # Lists are passed by reference in python.
+        split = splitDataset(dataset, bestFeatureToSplit, val)
+        myTree[bestFeatureLabel][val] = createTree(split, copy_of_feat_labels)
+    return myTree
 
-
-
+myTree = createTree(dataset, feat_labels)
+    
 
 
 
