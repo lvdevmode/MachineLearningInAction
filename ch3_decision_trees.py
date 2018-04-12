@@ -106,8 +106,8 @@ the dataset such that each subset contains only one kind of label.
 """
 
 def majorityCount(classList): # Passing a class list here as this func will be only be called
-    classCount =  {}          # when there are no more attributes left to split the dataset on
-    for label in classList:   # or in special cases when the number of splits have exceeded a limit.
+    classCount =  {}          # when there are no more attributes left to split the dataset on.
+    for label in classList:   # (or in special cases, when the number of splits have exceeded a limit)
         classCount[label] = classCount.get(label, 0) + 1
     sortedClassCount = sorted(classCount.items(), key=operator.itemgetter(1), reverse=True)
     return sortedClassCount[0][0]
@@ -125,12 +125,14 @@ def createTree(dataset, feat_labels):
     featureValues = [element[bestFeatureToSplit] for element in dataset]
     uniqueVals = set(featureValues)
     for val in uniqueVals:
-        copy_of_feat_labels = feat_labels[:] # Lists are passed by reference in python.
+        copy_of_feat_labels = feat_labels[:] # Lists are passed by reference in python, so need a copy.
         split = splitDataset(dataset, bestFeatureToSplit, val)
         myTree[bestFeatureLabel][val] = createTree(split, copy_of_feat_labels)
     return myTree
 
 myTree = createTree(dataset, feat_labels)
+
+
     
 
 
