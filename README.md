@@ -9,6 +9,8 @@ ch2_knn_dating.py - KNN for dating dataset. Look at various visualization implem
 
 ch2_knn_digits.py - KNN for MNIST-like dataset. Quite sleek.
 
-ch3_decision_tree.py - Decision Tree implemented. Took a while to grasp.
+ch3_decision_tree.py - Decision Tree implemented. Took a while to grasp. Uses ID3 algorithm.
 
-ch3_treePlotter.py - Function to plot a decision tree.
+ch3_treePlotter.py - Functions to plot a decision tree.
+
+ch3_decision_tree_lenses.py - Decision Tree for lenses dataset using ID3 algorithm.
