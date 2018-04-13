@@ -133,9 +133,6 @@ def createTree(dataset, feat_labels):
 myTree = createTree(dataset, feat_labels)
 
 
-    
-
-
 
 
 
