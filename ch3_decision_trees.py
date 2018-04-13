@@ -6,7 +6,6 @@ Created on Tue Apr 10 11:13:49 2018
 @author: lakshay
 """
 
-import numpy as np
 import math
 import operator
 
@@ -36,7 +35,7 @@ def calcShannonEntropy(dataset):
     return shannonEntropy
 
 
-dataset, feat_labels = create_dataset()
+#dataset, feat_labels = create_dataset()
 #print(calcShannonEntropy(dataset))
 
 
@@ -130,17 +129,47 @@ def createTree(dataset, feat_labels):
         myTree[bestFeatureLabel][val] = createTree(split, copy_of_feat_labels)
     return myTree
 
-myTree = createTree(dataset, feat_labels)
+#myTree = createTree(dataset, feat_labels)
 
-######### Plotting the decision tree.
-
+######### Plotting the decision tree
+"""
 import ch3_treePlotter
 
 ch3_treePlotter.createTreePlot_simple(myTree)
 ch3_treePlotter.createPlot(myTree)
+"""
+######### Testing the classifier
 
-#########
+def classify(decisionTree, featureLabels, testVec):
+    if isinstance(decisionTree, dict) == False:
+        return decisionTree
+    featureLabel = list(decisionTree.keys())[0]
+    featureIndex = featureLabels.index(featureLabel)
+    testFeatureValue = testVec[featureIndex]
+    featureValDict = decisionTree[featureLabel]
+    return classify(featureValDict[testFeatureValue], featureLabels, testVec)
 
+"""
+print(classify(myTree, create_dataset()[1], [0, 0]))
+print(classify(myTree, create_dataset()[1], [0, 1]))
+print(classify(myTree, create_dataset()[1], [1, 0]))
+print(classify(myTree, create_dataset()[1], [1, 1]))
+"""
 
+########### Storing and loading the decision tree
 
+def storeTree(inputTree, filename):
+    import pickle
+    f = open(filename, 'wb')
+    pickle.dump(inputTree, f)
+    f.close()
+    
+def loadTree(filename):
+    import pickle
+    f = open(filename, 'rb')
+    return pickle.load(f)
 
+"""
+storeTree(myTree, './data/ch3_decision_tree.pickle')
+restoredTree = loadTree('./data/ch3_decision_tree.pickle')
+"""
