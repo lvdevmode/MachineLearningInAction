@@ -132,9 +132,14 @@ def createTree(dataset, feat_labels):
 
 myTree = createTree(dataset, feat_labels)
 
+######### Plotting the decision tree.
 
+import ch3_treePlotter
 
+ch3_treePlotter.createTreePlot_simple(myTree)
+ch3_treePlotter.createPlot(myTree)
 
+#########
 
 
 
