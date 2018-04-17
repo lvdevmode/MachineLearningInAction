@@ -14,3 +14,5 @@ ch3_decision_tree.py - Decision Tree implemented. Took a while to grasp. Uses ID
 ch3_treePlotter.py - Functions to plot a decision tree.
 
 ch3_decision_tree_lenses.py - Decision Tree for lenses dataset using ID3 algorithm.
+
+ch4_bayes.py - Naive Bayes, using set of words, implemented. A bit different from the book. Easier to understand.
