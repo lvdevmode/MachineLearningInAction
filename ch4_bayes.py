@@ -91,5 +91,17 @@ def trainNaiveBayes(dataset, labels):
     return probWordLabel, probLabel    
 
 def classifyNaiveBayes(vec2Classify, probWordLabel, probLabel):
-    probClass = np.sum(np.array(vec2Classify) * probWordLabel, axis=1).reshape(-1, 1) + np.log(probLabel)
+    probClass = np.sum(np.array(vec2Classify) * probWordLabel, axis=1).reshape(-1, 1) \
+                + np.log(probLabel) # log(a) + log(b) = log(a*b)
     return np.argmax(probClass)
+
+def testingNaiveBayes():
+    dataset, labels = loadDataset()
+    vocab = createVocabList(dataset)
+    probWordLabel, probLabel = trainNaiveBayes(dataset, labels)
+    testDocs = [['love', 'my', 'dalmation'],
+                ['stupid', 'garbage']]
+    for doc in testDocs:
+        wordVec = setOfWordsToVec(vocab, doc)
+        print("The document => ", doc, "belongs to the class => ", 
+              classifyNaiveBayes(wordVec, probWordLabel, probLabel))
